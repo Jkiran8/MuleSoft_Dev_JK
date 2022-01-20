@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<apikit:config name="template-api-spec-config"
+		api="template-api-spec.raml" outboundHeadersMapName="outboundHeaders"
+		httpStatusVarName="httpStatus" />
+	<!-- Common base properties -->
+	<configuration-properties
+		doc:name="base-common-properties"
+		doc:description="Common Base Properties - Environment independent"
+		doc:id="d2768215-15d1-4bf9-837d-afdbd05c4bc9"
+		file="properties/common-config.yaml" />
+
+	<!-- Global Properties -->
+	<global-property doc:name="global-property"
+		doc:id="b1122ff3-31ab-4ebd-986f-a141d796b280" name="mule.env"
+		value="local" doc:description="Global property mule.env" />
+	<global-property doc:name="global-property"
+		doc:id="c83a1bc6-a654-4bac-88cc-da79efb879ba" name="mule.vault.key"
+		value="mulesoft12345678"
+		doc:description="Global property mule.vault.key" />
+
+	<secure-properties:config
+		name="Secure_Properties_Config" doc:name="Secure Properties Config"
+		doc:id="d2521f99-cb9a-4566-b177-904b586e6454"
+		file="properties/${mule.env}.yaml" key="${mule.vault.key}"
+		doc:description="Environment specific secured properties">
+		<secure-properties:encrypt
+			algorithm="Blowfish" />
+	</secure-properties:config>
+	<configuration-properties
+		doc:name="regular-env-properties"
+		doc:description="Environment specific regular properties"
+		doc:id="706bb7c0-2cae-414e-9bdc-0907ba7a85e3"
+		file="properties/${mule.env}.yaml" />
+	<configuration doc:name="Configuration" doc:id="0384fc5e-e766-4d8b-b301-a82979db0e2d" defaultErrorHandler-ref="globalError_Handler" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="1572a4e5-bfcd-4122-be81-460401e9728b" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<sub-flow name="globalSub_Flow" doc:id="54073259-5633-48bf-b4dd-a673e801d9e8" >
+		<set-variable value="#[attributes.httpStatus]" doc:name="Set HTTP Status Var" doc:id="ff746d8a-52fc-4488-aca7-86da217921be" variableName="httpStatus" />
+		<logger level="INFO" doc:name="log error" doc:id="f3b89e21-e60a-4f8e-913b-584bc8ea903f" message='#[%dw 2.0&#10;output application/json &#10;---&#10;{&#10; 	attributes: attributes,&#10; 	error:&#10;		errorType: error.errorType default "",&#10;		description: error.description default "",&#10;		detailedDescription: error.detailedDescription default "",&#10;}]' />
+		<choice doc:name="Choice" doc:id="c24f124b-2335-4751-8c2c-db0eb442dd1e">
+				<when expression="#[vars.httpStatus == null]">
+					<set-variable value="#[payload.errorDetails[0].code]" doc:name="Set HTTP Status Var" doc:id="2b993b37-c3f3-4bce-84f0-195d4b1714d9" variableName="httpStatus" />
+				</when>
+			</choice>
+	</sub-flow>
+	<error-handler name="globalError_Handler" doc:id="5b8c2644-e9c8-47c2-b3f2-88b1aad22e71" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="propagate ANY other error" doc:id="53097439-dd52-4435-a335-de80dcbd2fd4" type="ANY" >
+			<flow-ref doc:name="globalSub_Flow" doc:id="1f8d2a75-b7bf-47a0-b799-879636c29766" name="globalSub_Flow"/>
+		</on-error-propagate>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d89ae4f2-80f1-4fe6-8a09-e695b1aa1686" type="STREAM_MAXIMUM_SIZE_EXCEEDED">
+			<flow-ref doc:name="globalSub_Flow" doc:id="c436eea3-3189-4db4-967d-1fab286e4a5b" name="globalSub_Flow"/>
+		</on-error-continue>
+	</error-handler>
+</mule>

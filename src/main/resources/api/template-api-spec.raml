@@ -1,0 +1,28 @@
+#%RAML 1.0
+title: template-api-spec
+description: RAML template.
+version: v1
+
+mediaType: 
+- application/json
+
+uses:
+  Health: exchange_modules/af64390b-a787-4ba7-b98c-a1ab9fc918d6/api-standard-healthcheck/1.0.0/api-standard-healthcheck.raml
+  StandardErrors: exchange_modules/af64390b-a787-4ba7-b98c-a1ab9fc918d6/api-standard-errors/1.0.0/api-standard-errors.raml
+  SecuritySchemas: exchange_modules/af64390b-a787-4ba7-b98c-a1ab9fc918d6/api-clientidenforcement-standard-security/1.0.1/api-clientidenforcement-standard-security.raml
+  StandardTraits: exchange_modules/af64390b-a787-4ba7-b98c-a1ab9fc918d6/api-standard-traits/1.0.0/api-standard-traits.raml
+securedBy: [SecuritySchemas.clientIdEnforcement]
+  
+/health:
+  type: Health.check
+  is: 
+    - StandardErrors.errorHandler
+
+/products:
+   is:
+     - StandardTraits.protocol-required
+     - StandardTraits.external-api-header-required
+     - StandardErrors.errorHandler
+   put:
+     responses:
+       200:

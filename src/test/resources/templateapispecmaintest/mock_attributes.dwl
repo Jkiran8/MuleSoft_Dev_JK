@@ -1,0 +1,33 @@
+{
+  "headers": {
+    "host": "localhost:8081",
+    "connection": "keep-alive",
+    "sec-ch-ua": "\"Chromium\";v=\"94\", \"Google Chrome\";v=\"94\", \";Not A Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36",
+    "sec-ch-ua-platform": "\"macOS\"",
+    "accept": "*/*",
+    "sec-fetch-site": "same-origin",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-dest": "empty",
+    "referer": "http://localhost:8081/console/",
+    "accept-encoding": "gzip, deflate, br",
+    "accept-language": "en-US,en;q=0.9"
+  },
+  "clientCertificate": null,
+  "method": "GET",
+  "scheme": "http",
+  "queryParams": {},
+  "requestUri": "/v1/health",
+  "queryString": "",
+  "version": "HTTP/1.1",
+  "maskedRequestPath": "/health",
+  "listenerPath": "/v1/*",
+  "relativePath": "/v1/health",
+  "localAddress": "/127.0.0.1:8081",
+  "uriParams": {},
+  "rawRequestUri": "/v1/health",
+  "rawRequestPath": "/v1/health",
+  "remoteAddress": "/127.0.0.1:61016",
+  "requestPath": "/v1/health"
+}

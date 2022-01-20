@@ -1,0 +1,58 @@
+#%RAML 1.0 Library
+usage: This library defines the Health Check API.
+
+types:
+  health-check-response:
+    type: object
+    properties:
+      timestamp:
+        type: string
+        description: "System time on the API at execution of check.  Usually UTC time."
+        required: true
+        example: "2021-01-04T15:59:12-0600"
+      assetId:
+        type: string
+        description: "App's build name defined by the asset ID in the pom."
+        required: true
+        example: "common-notification-svc"
+      assetVersion:
+        type: string
+        description: "App's build version defined by the asset version in the pom.  This is NOT the API version."
+        required: true
+        example: "1.0.0"
+      appName:
+        type: string
+        description: "Name of the deployed app that is the running instance of the API."
+        required: true
+        example: "wd-common-notification-svc-dev-1"
+      runtime:
+        type: string
+        description: "Mule runtime version of the deployed app."
+        required: true
+        example: "4.3.0-20201021"
+      environment:
+        type: string
+        description: "Environment of the deployed app.  Corresponds to the the 'mule.env' property"
+        required: true
+        example: "dev"
+      status:
+        type: string
+        description: "Status of the API and related end systems."
+        required: false
+        enum: ["Running", "Down", "Partial"]
+        example: "Running"
+      details:
+        type: object
+        description: "Details on the status of the API and related end systems."
+        required: false
+        example: {}
+
+resourceTypes: 
+  check:
+    get:
+      description: "Get health of the application"
+      responses:
+        200:
+          body:
+            application/json: 
+              type: health-check-response              

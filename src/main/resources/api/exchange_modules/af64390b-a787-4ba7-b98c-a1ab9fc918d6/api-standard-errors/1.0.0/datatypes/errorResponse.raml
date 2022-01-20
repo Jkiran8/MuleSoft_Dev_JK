@@ -1,0 +1,28 @@
+#%RAML 1.0 DataType
+displayName: errorResponse
+
+type: object 
+properties:
+  success:
+    type: boolean
+  apiName:
+    type: string
+    required: false
+  version:
+    type: string
+    required: false
+  correlationId:
+    type: string
+    required: false
+  timestamp:
+    type: string
+    required: false   
+  error: 
+    type: object
+    properties: 
+      message:
+        type: string
+        required: false
+      details:
+        type: string
+        required: false

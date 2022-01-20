@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="template-api-spec-suite.xml" />
+	<munit:test name="template-api-spec-main-test" doc:id="54255526-36fe-409a-b96e-6ff88e5b89ac" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="8ef87ffd-6de9-4e17-8aba-0b8928c19c07" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6423fcc1-e2a9-4f1e-85fc-5991f5279998" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://templateapispecmaintest/mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://templateapispecmaintest/mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://templateapispecmaintest/mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://templateapispecmaintest/mock_variable_1.dwl')]" />
+						<munit-tools:variable key="varResourceName" value="#[output application/java --- readUrl('classpath://templateapispecmaintest/mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="varVerboseFlag" value="#[output application/json --- readUrl('classpath://templateapispecmaintest/mock_variable_3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="7289f200-96bd-4443-acd1-f00081620d23" >
+				<munit:payload value="#[readUrl('classpath://templateapispecmaintest/set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://templateapispecmaintest/set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to template-api-spec-main" doc:id="1c50f398-c986-45c3-9d10-14a7e2814592" name="template-api-spec-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="1b6846d1-fe13-4749-8913-2f46ed5d6f99" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import templateapispecmaintest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="template-api-spec-console-test" doc:id="569fd905-8c3f-47c1-a030-bf5bbe5be4fc" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Console" doc:id="2e258e17-e895-49dc-b1a6-856a63bf4d09" processor="apikit:console">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="32cedb50-0383-462d-9c0c-e7e1f36c8a3a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[readUrl('classpath://templateapispecconsoletest/mock_payload.dwl')]" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://templateapispecconsoletest/mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://templateapispecconsoletest/mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://templateapispecconsoletest/mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="955ecd1b-676a-48ab-aa2c-506f11b3df15" >
+				<munit:payload value="#[readUrl('classpath://templateapispecconsoletest/set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://templateapispecconsoletest/set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to template-api-spec-console" doc:id="1e5b09a6-b621-465c-b81c-5abf124c26c0" name="template-api-spec-console"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="bcbe338d-eb59-4f48-b398-5d1edd2cead5" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import templateapispecconsoletest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+</mule>

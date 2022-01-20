@@ -1,0 +1,26 @@
+# JSON Logger Configurations [DO NOT DELETE - Also referenced by core-resources-lib]
+current.app:          # [DO NOT EDIT] To be replaced by Maven build
+  name:               "${project.artifactId}"
+  version:            "${project.version}"
+  
+## JSON Logger configuration
+json:
+  logger:
+    application: # [DO NOT EDIT] To be replaced by Maven build
+      name: "${project.artifactId}"
+      version: "${project.version}"
+    disabledFields: "content" # Indicate which fields should not be logged, can be comma seperated
+    category:
+       general: "${project.artifactId}"
+
+#  Needed when testing in Studio and app is restarted since resources filtering in pom will not update these props.
+project:
+  artifactId:         "${project.artifactId}"
+  version:            "${project.version}"
+
+health.verbose.client.id: ""
+
+# Include environment independent properties below
+apiOrgId: "365b2237-2072-44b2-96a4-fc661b08d619"
+
+  

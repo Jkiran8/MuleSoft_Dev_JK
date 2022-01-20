@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
+    <flow name="template-api-spec-main">
+        <http:listener path="${https.basePath}" config-ref="HTTP_Listener_config">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <set-variable value="#[attributes.method ++ ':' ++ attributes.requestUri]" doc:name="Set varResourceName" doc:id="264fad33-484e-4cac-8ba7-00442f638bb2" variableName="varResourceName" />
+		<logger level="DEBUG" doc:name="start" doc:id="eab373a9-542a-434e-900d-b02c6f37baa7" message="#['Start ' ++ vars.varResourceName]" />
+		<apikit:router config-ref="template-api-spec-config" doc:id="6423fcc1-e2a9-4f1e-85fc-5991f5279998"/>
+		<logger level="DEBUG" doc:name="end" doc:id="ac93b527-7065-4cb5-a991-7650bc440c0a" message="#['End ' ++ vars.varResourceName]" />
+        
+    </flow>
+    <flow name="template-api-spec-console">
+        <http:listener path="/console/*" config-ref="HTTP_Listener_config">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="template-api-spec-config" doc:id="32cedb50-0383-462d-9c0c-e7e1f36c8a3a"/>
+    </flow>
+    <flow name="get:\health:template-api-spec-config">
+        <ee:transform doc:name="Set varVerboseFlag" doc:id="e3459276-5d63-4110-83d2-7986b31aebaf" >
+            <ee:message />
+            <ee:variables >
+                <ee:set-variable resource="dwl/healthcheck-getVerboseFlag.dwl" variableName="varVerboseFlag" />
+            </ee:variables>
+        </ee:transform>
+        <choice doc:name="mode?" doc:id="75c983ac-cecc-40a2-ad75-d1b61540c0b6" >
+            <when expression="#[vars.varVerboseFlag]" >
+                <ee:transform doc:name="Verbose response payload" doc:id="9ea30ebd-5d36-485f-81bd-277c144e07a2" >
+                    <ee:message >
+                        <ee:set-payload resource="dwl/healthcheck-setVerboseResponse.dwl" />
+                    </ee:message>
+                </ee:transform>
+            </when>
+            <otherwise >
+                <ee:transform doc:name="Default response payload" doc:id="8c5dc9f5-0c1e-441b-874b-a660797289e8" >
+                    <ee:message >
+                        <ee:set-payload resource="dwl/healthcheck-setBasicResponse.dwl" />
+                    </ee:message>
+                </ee:transform>
+            </otherwise>
+        </choice>
+        <logger level="INFO" doc:name="success" doc:id="5ace291d-64ba-4d41-87b9-d5eae2ed9552" message='#["HealthCheck call Success"]'/>
+    </flow>
+</mule>

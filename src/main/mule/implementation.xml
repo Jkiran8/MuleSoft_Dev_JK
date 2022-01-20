@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="implementationFlow" doc:id="b5ab6776-ea3c-4438-a907-459edf64bfcd" >
+		<logger level="INFO" doc:name="Logger" doc:id="ecb45ab8-3dea-4467-bcc8-ed4bc47f1c36" message='#["Starting Implementation Flow"]'/>
+	</flow>
+</mule>
